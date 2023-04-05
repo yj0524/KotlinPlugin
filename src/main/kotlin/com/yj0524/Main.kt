@@ -25,6 +25,7 @@ class Main : JavaPlugin() {
 
         updateFromGitHub("yj0524", "KotlinPlugin", "KotlinPlugin.jar") {
             fileDownload()
+            Bukkit.getConsoleSender().sendMessage("${ChatColor.GREEN}플러그인 최신 버전이 자동으로 다운로드되었습니다. (최신 버전이어도 다운로드합니다.) 다운로드된 플러그인은 서버를 리로드하면 적용됩니다.")
         }
 
         kommandsLoad()
