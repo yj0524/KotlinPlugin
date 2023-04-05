@@ -2,6 +2,8 @@ package com.yj0524
 
 import io.github.monun.kommand.*
 import io.github.monun.tap.util.updateFromGitHub
+import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -10,7 +12,10 @@ import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 class Main : JavaPlugin() {
 
@@ -18,7 +23,11 @@ class Main : JavaPlugin() {
         // Plugin startup logic
         getLogger().info("Plugin Enabled")
 
-        updateFromGitHub("yj0524", "KotlinPlugin", "KotlinPlugin.jar")
+        updateFromGitHub("yj0524", "KotlinPlugin", "KotlinPlugin.jar") {
+            Bukkit.getConsoleSender().sendMessage("${ChatColor.RED}새로운 버전이 출시되었습니다! 다운로드를 시작합니다.")
+            fileDownload()
+            Bukkit.getConsoleSender().sendMessage("${ChatColor.GREEN}다운로드가 완료되었습니다! 서버를 리로드하면 플러그인이 자동으로 적용됩니다.")
+        }
 
         kommandsLoad()
 
@@ -218,6 +227,45 @@ class Main : JavaPlugin() {
                     }
                 }
             }
+        }
+    }
+
+    fun fileDownload() {
+        val fileUrl = "https://github.com/yj0524/KotlinPlugin/releases/latest/download/KotlinPlugin.jar"
+
+        try {
+            val url = URL(fileUrl)
+            val httpConn = url.openConnection() as HttpURLConnection
+            val responseCode = httpConn.responseCode
+
+            // HTTP 응답 코드가 200인 경우 (성공)
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                // 로컬에 저장할 파일 경로 생성
+                val filePath = "${dataFolder}/../update/KotlinPlugin.jar"
+
+                // 파일 출력 스트림 열기
+                val inputStream: InputStream = httpConn.inputStream
+                val outputStream = FileOutputStream(filePath)
+
+                // 버퍼 선언 및 초기화
+                val buffer = ByteArray(4096)
+                var bytesRead = -1
+
+                // 파일 내용을 버퍼에 읽어서 로컬 파일에 쓰기
+                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                    outputStream.write(buffer, 0, bytesRead)
+                }
+
+                // 자원 해제
+                outputStream.close()
+                inputStream.close()
+            }
+
+            // 연결 종료
+            httpConn.disconnect()
+
+        } catch (ex: Exception) {
+            ex.printStackTrace()
         }
     }
 }
