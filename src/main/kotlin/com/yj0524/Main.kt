@@ -1,6 +1,7 @@
 package com.yj0524
 
 import io.github.monun.kommand.*
+import io.github.monun.tap.util.updateFromGitHub
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -10,11 +11,14 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
+
 class Main : JavaPlugin() {
 
     override fun onEnable() {
         // Plugin startup logic
         getLogger().info("Plugin Enabled")
+
+        updateFromGitHub("yj0524", "KotlinPlugin", "KotlinPlugin.jar")
 
         kommandsLoad()
 
@@ -135,10 +139,10 @@ class Main : JavaPlugin() {
                     executes {
                         sender.sendMessage("§cUsage : /kotlinplugin effects <bool>")
                     }
-                    then("bool" to bool()) {
+                    then("effect" to bool()) {
                         executes {
-                            val bool: Boolean by it
-                            if (bool) {
+                            val effect: Boolean by it
+                            if (effect) {
                                 player.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, -1, 255, true, false))
                                 player.addPotionEffect(PotionEffect(PotionEffectType.SATURATION, -1, 255, true, false))
                                 player.addPotionEffect(PotionEffect(PotionEffectType.NIGHT_VISION, -1, 255, true, false))
@@ -146,7 +150,7 @@ class Main : JavaPlugin() {
                                 player.addPotionEffect(PotionEffect(PotionEffectType.FIRE_RESISTANCE, -1, 255, true, false))
                                 player.sendMessage("§aEffects Enabled")
                             }
-                            else if (!bool) {
+                            else if (!effect) {
                                 player.removePotionEffect(PotionEffectType.REGENERATION)
                                 player.removePotionEffect(PotionEffectType.SATURATION)
                                 player.removePotionEffect(PotionEffectType.NIGHT_VISION)
@@ -161,10 +165,10 @@ class Main : JavaPlugin() {
                     executes {
                         sender.sendMessage("§cUsage : /kotlinplugin chat <bool>")
                     }
-                    then("bool" to bool()) {
+                    then("chat" to bool()) {
                         executes {
-                            val bool: Boolean by it
-                            if (bool) {
+                            val chat: Boolean by it
+                            if (chat) {
                                 server.pluginManager.registerEvents(object : Listener {
                                     @EventHandler
                                     fun onChat(event: AsyncPlayerChatEvent) {
@@ -173,7 +177,7 @@ class Main : JavaPlugin() {
                                 }, this@Main)
                                 sender.sendMessage("§aChat Enabled")
                             }
-                            else if (!bool) {
+                            else if (!chat) {
                                 server.pluginManager.registerEvents(object : Listener {
                                     @EventHandler
                                     fun onChat(event: AsyncPlayerChatEvent) {
@@ -189,10 +193,10 @@ class Main : JavaPlugin() {
                     executes {
                         sender.sendMessage("§cUsage : /kotlinplugin pvp <bool>")
                     }
-                    then("bool" to bool()) {
+                    then("pvp" to bool()) {
                         executes {
-                            val bool: Boolean by it
-                            if (bool) {
+                            val pvp: Boolean by it
+                            if (pvp) {
                                 server.pluginManager.registerEvents(object : Listener {
                                     @EventHandler
                                     fun onPvP(event: EntityDamageByEntityEvent) {
@@ -201,7 +205,7 @@ class Main : JavaPlugin() {
                                 }, this@Main)
                                 sender.sendMessage("§aPvP Enabled")
                             }
-                            else if (!bool) {
+                            else if (!pvp) {
                                 server.pluginManager.registerEvents(object : Listener {
                                     @EventHandler
                                     fun onPvP(event: EntityDamageByEntityEvent) {
